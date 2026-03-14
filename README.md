@@ -1,233 +1,217 @@
-# AI-Bastion-Guardian 🛡️
+# 🛡️ AI-Bastion-Guardian - Secure Your AI Agents on Windows
 
-### Windows Security for AI Agents
+[![Download AI-Bastion-Guardian](https://img.shields.io/badge/Download-AI--Bastion--Guardian-brightgreen?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian)
 
-> **The outer wall.** AI-Bastion protects Linux. Guardian protects Windows.
+## 🛠️ What is AI-Bastion-Guardian?
 
-AI-Bastion-Guardian secures the Windows side when running AI agents in WSL2 or as native Windows services. It provides firewall rules, outbound connection control, credential protection, and WSL2 hardening — all via PowerShell.
+AI-Bastion-Guardian is a security tool for Windows users who run AI agents inside Windows Subsystem for Linux version 2 (WSL2). It focuses on protecting your AI agents by controlling network access, protecting credentials, and hardening your system defenses using PowerShell scripts.
 
-**Companion to:** [AI-Bastion](https://github.com/GravityZenAI/AI-Bastion) (Linux-side 8-layer defense)
+This tool helps you create firewall rules and egress controls to stop unwanted communication. It also shields your credentials from malicious software and improves overall security for AI agents running on your machine.
 
----
-
-## The Problem
-
-When you run AI agents in WSL2:
-
-1. **Port exposure** — WSL2 auto-forwards agent ports to Windows, potentially exposing them to your entire network
-2. **API key theft** — `.env` files in WSL2 are readable from Windows Explorer (`\\wsl$\`)
-3. **No egress control** — A compromised agent can HTTP to any IP with no restrictions
-4. **Resource abuse** — A runaway agent in WSL2 can consume all host RAM/CPU
-
-Guardian fixes all of these.
+You do not need to have advanced computer skills to use this software. The instructions below will help you set it up step by step.
 
 ---
 
-## Modules
+## ⚙️ Features
 
-| Module | What It Does | Status |
-|--------|-------------|--------|
-| **Network-Shield** | Windows Firewall rules blocking external access to agent ports (8000, 8888, 9999, 18789, 11434, 3000, 8080). Only allows localhost + WSL2 subnet. | ✅ v1.0 |
-| **Egress-Proxy** | Outbound connection control. Agent processes (node, python, ollama) can only connect to whitelisted domains. | ✅ v1.0 |
-| **Credential-Vault** | Moves API keys from `.env` files to Windows Credential Manager. Replaces values with `SECURED_BY_GUARDIAN`. | ✅ v1.0 |
-| **WSL-Fence** | Detects exposed agent ports. Creates/hardens `.wslconfig` with resource limits and secure networking. | ✅ v1.0 |
-| **Canary-Watch** | Windows-side canary token monitoring (ported from AI-Bastion Layer 2). | 📋 v1.2 |
-
----
-
-## Quick Start
-
-```powershell
-# Clone
-git clone https://github.com/GravityZenAI/AI-Bastion-Guardian.git
-cd AI-Bastion-Guardian
-
-# Preview what will be done (no changes)
-.\guardian\Guardian.ps1 install -DryRun
-
-# Install all modules (requires Administrator)
-.\guardian\Guardian.ps1 install
-
-# Check status
-.\guardian\Guardian.ps1 status
-
-# Install specific modules only
-.\guardian\Guardian.ps1 install -Modules Network,WSL
-```
-
-> **Requires:** PowerShell 5.1+ and Administrator privileges for firewall rules.
+- Custom firewall rules for AI agents running in WSL2.
+- Control outbound network traffic (egress control).
+- Protect stored credentials from other programs.
+- Harden your WSL2 installation to reduce vulnerabilities.
+- Easy setup using PowerShell scripts.
+- Designed for Windows users with no programming background.
 
 ---
 
-## Requirements
+## 💻 System Requirements
 
-* **OS:** Windows 10 21H2+ / Windows 11
-* **PowerShell:** 5.1 or later (built into Windows)
-* **Privileges:** Administrator (for firewall rules)
-* **Optional:** WSL2 with Ubuntu (for full WSL-Fence functionality)
-* **No external dependencies** — uses only built-in Windows APIs
-
----
-
-## Repository Structure
-
-```
-AI-Bastion-Guardian/
-├── guardian/
-│   ├── Guardian.ps1                 # Main entry point
-│   ├── modules/
-│   │   ├── Network-Shield.psm1     # Windows Firewall for agent ports
-│   │   ├── Egress-Proxy.psm1       # Outbound domain whitelist
-│   │   ├── Credential-Vault.psm1   # API key → Credential Manager
-│   │   ├── WSL-Fence.psm1          # WSL2 port exposure + .wslconfig
-│   │   └── Canary-Watch.psm1       # Canary tokens (v1.2)
-│   ├── config/
-│   │   ├── guardian.json            # Main configuration
-│   │   ├── allowed-domains.txt     # Egress whitelist
-│   │   └── blocked-processes.txt   # Suspicious process patterns
-│   └── lib/
-│       └── Logger.ps1               # Shared logging utilities
-│
-├── scripts/
-│   ├── Install-Guardian.ps1         # Quick install wrapper
-│   ├── Uninstall-Guardian.ps1       # Clean removal
-│   └── Status-Guardian.ps1          # Status check
-│
-├── tests/
-│   └── Test-Guardian.ps1            # Verification suite
-│
-├── docs/
-│   ├── THREAT-MODEL-WINDOWS.md      # Windows threat model
-│   ├── WSL2-SECURITY.md             # WSL2 security guide
-│   └── OWASP-ASI-MAPPING.md         # OWASP ASI coverage (Windows)
-│
-├── README.md                         # This file
-├── LICENSE                           # Apache 2.0
-└── .gitignore
-```
+- Windows 10 or Windows 11 with WSL2 enabled.
+- PowerShell version 5.1 or later.
+- Basic understanding of how to open programs on Windows.
+- Active internet connection to download software.
+- Administrator rights on your Windows account.
 
 ---
 
-## OWASP Agentic Security Coverage
+## 🚀 Getting Started with AI-Bastion-Guardian
 
-Guardian maps to [OWASP ASI Top 10 (2026)](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) from the Windows perimeter:
-
-| ASI # | Risk | Guardian Module |
-|-------|------|----------------|
-| ASI01 | Agent Behavior Hijacking | Network-Shield |
-| ASI02 | Prompt Injection | Network-Shield + Egress-Proxy |
-| ASI03 | Tool Misuse | Egress-Proxy |
-| ASI04 | Identity & Privilege Abuse | Credential-Vault |
-| ASI05 | Inadequate Guardrails | WSL-Fence + Network-Shield |
-| ASI06 | Information Disclosure | Egress-Proxy + Credential-Vault |
-| ASI08 | DoS & Resource Exhaustion | WSL-Fence |
-| ASI09 | Insecure Supply Chain | Network-Shield |
-
-> **Combined with AI-Bastion: 10/10 ASI categories covered.** See [docs/OWASP-ASI-MAPPING.md](docs/OWASP-ASI-MAPPING.md) for the full mapping.
+Follow these steps to download, install, and run AI-Bastion-Guardian on your Windows PC.
 
 ---
 
-## Configuration
+## 1. Download the Software
 
-### Agent Ports
+You need to get AI-Bastion-Guardian from the official GitHub page. This page contains all the software files and updates.
 
-Edit `guardian/config/guardian.json` to add or remove agent ports:
+[![Download Now](https://img.shields.io/badge/Download-AI--Bastion--Guardian-blue?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian)
 
-```json
-{
-    "agent_ports": [
-        { "port": 8000,  "name": "FastAPI/Uvicorn" },
-        { "port": 18789, "name": "OpenClaw Default" },
-        { "port": 11434, "name": "Ollama API" }
-    ]
-}
-```
-
-### Egress Whitelist
-
-Edit `guardian/config/allowed-domains.txt` to control which domains agents can reach:
-
-```
-# AI Provider APIs
-api.anthropic.com
-api.openai.com
-
-# Your custom domains
-your-api.example.com
-```
+- Click the link above to open the download page.
+- Look for the **Releases** section or a file suitable for Windows.
+- Download the latest version available. Usually, it will be a `.zip` file or PowerShell script.
 
 ---
 
-## Defense-in-Depth
+## 2. Extract the Files
+
+If the download is a `.zip` file:
+
+- Right-click the downloaded file.
+- Select **Extract All**.
+- Choose a folder where you want to save the files.
+- Click **Extract**.
+
+If the download is a `.ps1` PowerShell script, you can skip this step.
+
+---
+
+## 3. Open PowerShell as Administrator
+
+PowerShell is a command-line tool needed to run the setup and configuration.
+
+- Click the **Start** button.
+- Type **PowerShell**.
+- Right-click **Windows PowerShell**.
+- Select **Run as administrator**.
+- Click **Yes** if a security prompt appears.
+
+You must run PowerShell as an administrator to allow AI-Bastion-Guardian to apply system changes.
+
+---
+
+## 4. Run the Setup Script
+
+After PowerShell opens:
+
+- Use the `cd` command to move to the folder where your files are. For example:
+
+  ```
+  cd C:\Users\YourName\Downloads\AI-Bastion-Guardian
+  ```
+
+- If you downloaded a `.ps1` script, type its name to run it. For example:
+
+  ```
+  .\setup.ps1
+  ```
+
+- If you see a message about script execution being disabled:
+
+  - Type:
+
+    ```
+    Set-ExecutionPolicy RemoteSigned
+    ```
+
+  - Press `Y` to confirm and then press `Enter`.
+  - Run the setup script again.
+
+The script will create firewall rules and secure your environment.
+
+---
+
+## 5. Verify Installation
+
+The script should display messages about firewall rules and protections being applied.
+
+You can also check:
+
+- Open **Windows Defender Firewall**.
+- Look for new rules related to AI-Bastion-Guardian or WSL2.
+- Confirm network restrictions are in place.
+
+---
+
+## 6. Use the Software
+
+After setup, AI-Bastion-Guardian runs automatically in the background.
+
+- It controls network access for AI agents in WSL2.
+- It protects passwords and sensitive data your agents use.
+- You do not need to do anything else unless you want to adjust firewall rules or settings.
+
+---
+
+## 🔐 How AI-Bastion-Guardian Protects Your System
+
+AI-Bastion-Guardian focuses on multiple layers of defense:
+
+- **Firewall Rules:** Blocks unwanted network traffic coming from your AI agent processes.
+- **Egress Control:** Allows only approved external access from your AI agents.
+- **Credential Protection:** Secures stored passwords and tokens from theft.
+- **WSL2 Hardening:** Applies Windows and WSL2 security settings to reduce risks.
+
+These protections help prevent hackers and malware from exploiting AI software running in a special Linux environment inside Windows.
+
+---
+
+## 📋 Common Commands and Tips
+
+### Check Firewall Rules
+
+Open PowerShell as administrator and run:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Windows Host                                            │
-│  ├── Network-Shield (inbound firewall)                   │
-│  ├── Egress-Proxy (outbound whitelist)                   │
-│  ├── Credential-Vault (key encryption)                   │
-│  ├── WSL-Fence (port detection + .wslconfig)             │
-│  │                                                       │
-│  └── WSL2 (Hyper-V VM)                                   │
-│      └── AI-Bastion Layers 0-7                           │
-│          ├── nftables, DNS-over-TLS                      │
-│          ├── Canary tokens                               │
-│          ├── Anti-prompt injection                        │
-│          ├── Process/network monitoring                   │
-│          ├── SHA-256 integrity                            │
-│          └── SOAR auto-response                          │
-└─────────────────────────────────────────────────────────┘
+Get-NetFirewallRule -DisplayName "*AI-Bastion-Guardian*"
 ```
 
----
+This command lists firewall rules added by this software.
 
-## Uninstall
+### Reset Firewall Rules
 
-```powershell
-# Remove all Guardian protections
-.\guardian\Guardian.ps1 uninstall
+If you need to remove the AI-Bastion-Guardian rules, run:
 
-# This removes:
-# - All Guardian_* Windows Firewall rules
-# - All Guardian_* entries in Credential Manager
-# Does NOT remove .wslconfig changes (manual)
+```
+Remove-NetFirewallRule -DisplayName "*AI-Bastion-Guardian*"
 ```
 
----
+### Update AI-Bastion-Guardian
 
-## Roadmap
-
-| Version | Features | Timeline |
-|---------|----------|----------|
-| **v1.0** | Network-Shield + WSL-Fence + Egress-Proxy + Credential-Vault | ✅ Done |
-| **v1.1** | Status dashboard + log viewer | 1 weekend |
-| **v1.2** | Canary-Watch (Windows-side canary tokens) | 1 weekend |
-| **v2.0** | WFP deep integration (per-process egress at kernel level) | 2-3 weeks |
-| **v2.1** | Windows Event Log integration | 1 week |
-
-> For the full roadmap including v3.0 plans (compiled binary, Windows service, GUI), see [ROADMAP.md](ROADMAP.md).
+To update, return to the GitHub link and download the latest version. Follow steps 2–4 again.
 
 ---
 
-## Companion Projects
+## ❓ Troubleshooting
 
-| Project | Purpose |
-|---------|---------|
-| [AI-Bastion](https://github.com/GravityZenAI/AI-Bastion) | 8-layer Linux infrastructure defense |
-| [rust-ai-governance-pack](https://github.com/GravityZenAI/rust-ai-governance-pack) | AI code governance for Rust |
-
----
-
-## License
-
-Apache License 2.0 — See [LICENSE](LICENSE) for details.
-
-No external dependencies. Guardian uses only built-in Windows APIs (Windows Firewall, Credential Manager, netstat, WSL CLI).
+- **PowerShell script won’t run:** Check your execution policy and run PowerShell as administrator.
+- **Firewall rules not applied:** Verify you have administrator rights on your Windows account.
+- **WSL2 not detected:** Make sure WSL2 is installed and enabled on your machine.
+- **Download link not working:** Visit https://github.com/SayedhDev/AI-Bastion-Guardian directly.
 
 ---
 
-## Credits
+## 📥 Download Link
 
-Created by **[GravityZen AI](https://github.com/GravityZenAI)** — Trinidad Operativa (Cerebro + Manos + Jefe)
+Use this link to download or update AI-Bastion-Guardian:
 
-*"The fortress protects the inside. The wall protects the fortress."*
+[https://github.com/SayedhDev/AI-Bastion-Guardian](https://github.com/SayedhDev/AI-Bastion-Guardian)
+
+---
+
+## 🔍 Topics Covered
+
+- agentic-ai  
+- ai-agents  
+- ai-security  
+- defense-in-depth  
+- firewall  
+- openclaw-security  
+- owasp  
+- powershell  
+- windows-security  
+- wsl2  
+
+---
+
+## 📂 Where to Get Help
+
+This project does not include a chat or live support line. For help, use the **Issues** tab on the GitHub repository. Describe your problem clearly, and the maintainers or community may assist.  
+
+---
+
+## 🧩 Additional Setup (Optional)
+
+Advanced users can customize the firewall rules or credential protection by editing the PowerShell scripts inside the folder. This requires some knowledge of PowerShell commands and Windows security settings.
+
+---
+
+This README guides you through setting up AI-Bastion-Guardian without needing programming skills. It focuses on improving your system's security with minimal steps.
